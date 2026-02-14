@@ -100,3 +100,32 @@ h1 {
     h1 { font-size: 2.5em; }
     .message { font-size: 1.3em; }
 }
+.buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.no-btn {
+    background: linear-gradient(45deg, #ff9800, #f57c00);
+    box-shadow: 0 10px 30px rgba(255,152,0,0.4);
+}
+
+.no-btn:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 15px 40px rgba(255,152,0,0.6);
+}
+
+.no-message {
+    font-size: 1.8em;
+    margin: 20px 0;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s ease;
+    color: #c2185b;
+}
+
+.no-message.show {
+    opacity: 1;
+    transform: scale(1);
+}
