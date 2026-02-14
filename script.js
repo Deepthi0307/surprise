@@ -1,5 +1,6 @@
 let step = 1;
 let noClicks = 0;
+let noButtonDisabled = false; // NEW: Track disabled state
 
 function typeWriter(element, text, speed = 100) {
     let i = 0;
@@ -25,6 +26,11 @@ function revealSurprise() {
 }
 
 function showNoMessage() {
+    // **FIX 1**: Stop if already disabled or too many clicks
+    if (noButtonDisabled || noClicks >= 5) {
+        return;
+    }
+    
     noClicks++;
     document.querySelectorAll('.no-message').forEach(msg => msg.classList.add('hidden'));
     
@@ -36,23 +42,33 @@ function showNoMessage() {
         }, 200);
     }
     
-    // Move No button
+    // **FIX 2**: Move No button + start disable countdown
     const noBtn = document.getElementById('noBtn');
     const maxX = window.innerWidth - 120;
     noBtn.style.position = 'fixed';
     noBtn.style.left = (Math.random() * maxX) + 'px';
     noBtn.style.top = (Math.random() * 400) + 'px';
+    noBtn.style.transition = 'all 0.5s ease';
+    
+    // **FIX 3**: DISABLE after 4th click (3 messages shown)
+    if (noClicks === 4) {
+        setTimeout(() => {
+            noButtonDisabled = true;
+            noBtn.innerHTML = '😜 Just say Yes! 💕';
+            noBtn.style.background = '#ff4081';
+            noBtn.onclick = revealSurprise; // Redirect to Yes!
+        }, 1000);
+    }
 }
 
 window.onload = () => {
-    // Messages
     const messages = [
-        "I've been waiting to show you something special",
-        "You make every day better just by being you 💖",
+        "Ena Pakkura 👀 ?? Intha last one year something special for me,so intha valentines day normal ah iruka kudathula😜😜",
+        "You make every day better just by your presence 💖",
         "Will you be my Valentine? Forever?"
     ];
     
-    typeWriter(document.getElementById('title'), 'Hey love... 💕');
+    typeWriter(document.getElementById('title'), 'Hey love... 💋');
     
     let msgIndex = 0;
     const showNext = () => {
@@ -97,4 +113,3 @@ function createHeart(x, y) {
         }
     }, 20);
 }
-
