@@ -17,13 +17,22 @@ function typeWriter(element, text, speed = 100) {
 
 function revealSurprise() {
     document.getElementById('surprise').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'auto'; // Allow scroll for mobile
     document.getElementById('buttons').style.display = 'none';
     
-    for(let i = 0; i < 100; i++) {
-        setTimeout(() => createHeart(Math.random() * window.innerWidth, -50), i * 10);
-    }
+    // 🌟 MASSIVE HEART SHOWER - 300+ brighter hearts!
+    const heartShower = setInterval(() => {
+        for(let i = 0; i < 8; i++) { // 8 hearts per frame
+            createFallingHeart();
+        }
+    }, 50); // Every 50ms = 160 hearts/second!
+    
+    // Stop after 10 seconds of pure magic ✨
+    setTimeout(() => {
+        clearInterval(heartShower);
+    }, 10000);
 }
+
 
 function showNoMessage() {
     // **FIX 1**: Stop if already disabled or too many clicks
@@ -96,20 +105,58 @@ window.onload = () => {
 document.getElementById('yesBtn').addEventListener('click', revealSurprise);
 document.getElementById('noBtn').addEventListener('click', showNoMessage);
 
-function createHeart(x, y) {
+function createFallingHeart() {
+    const hearts = ['💖', '💕', '💗', '💝', '🌸', '✨', '💫'];
     const heart = document.createElement('div');
-    heart.innerHTML = '💖';
-    heart.style.cssText = `position:fixed;left:${x}px;top:${y}px;font-size:20px;pointer-events:none;z-index:1000;`;
+    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+    
+    // 🌟 BRIGHTER + RANDOM SIZES + GLOW
+    const size = 18 + Math.random() * 25;
+    const x = Math.random() * (window.innerWidth - 60);
+    
+    heart.style.cssText = `
+        position: fixed; 
+        left: ${x}px; 
+        top: -60px;
+        font-size: ${size}px;
+        pointer-events: none; 
+        z-index: 2000;
+        text-shadow: 0 0 15px #ff69b4, 0 0 25px #ff1493;
+        opacity: 0.9;
+        transform: rotate(${Math.random() * 360}deg);
+    `;
+    
     document.body.appendChild(heart);
     
-    let dy = 0;
+    // 🎭 FALL + SWAY + FADE + ROTATE
+    let fallSpeed = 2 + Math.random() * 4;
+    let sway = 0;
+    let rotation = 0;
+    
     const fall = setInterval(() => {
-        dy += 3;
-        heart.style.top = (y + dy) + 'px';
-        heart.style.opacity = 1 - (dy / 400);
-        if (dy > 400) {
+        const rect = heart.getBoundingClientRect();
+        
+        // Fall down
+        heart.style.top = (parseFloat(heart.style.top) + fallSpeed) + 'px';
+        
+        // Side-to-side sway
+        sway += 0.3;
+        heart.style.left = (parseFloat(heart.style.left) + Math.sin(sway) * 1.5) + 'px';
+        
+        // Continuous rotation
+        rotation += 8;
+        heart.style.transform = `rotate(${rotation}deg)`;
+        
+        // Fade out
+        const opacity = parseFloat(heart.style.opacity);
+        heart.style.opacity = (opacity - 0.01);
+        
+        // Remove when off screen
+        if (rect.bottom > window.innerHeight + 50 || opacity < 0.1) {
             clearInterval(fall);
             heart.remove();
         }
     }, 20);
+}
+
 }
