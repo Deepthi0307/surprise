@@ -3,9 +3,10 @@
 body {
     font-family: 'Georgia', serif;
     height: 100vh;
-    overflow: hidden;
+    overflow: auto; /* Changed from hidden */
     background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fad0c4 100%) !important;
     position: relative;
+    padding: 20px;
 }
 
 .container {
@@ -13,18 +14,19 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
     text-align: center;
     color: #5a1a3a;
     padding: 20px;
+    max-width: 90vw;
 }
 
 h1 { 
-    font-size: 4em; 
+    font-size: clamp(1.8em, 8vw, 4em); 
     color: #d63384; 
     text-shadow: 0 0 20px rgba(214,51,132,0.6);
-    margin-bottom: 30px;
-    animation: glow 2s ease-in-out infinite alternate;
+    margin-bottom: 20px;
+    line-height: 1.2;
 }
 
 @keyframes glow {
@@ -33,15 +35,18 @@ h1 {
 }
 
 .message {
-    font-size: 2em;
-    margin: 20px 0;
+    font-size: clamp(1.2em, 6vw, 2em);
+    margin: 15px 0;
     opacity: 0;
-    transform: translateY(50px);
+    transform: translateY(30px);
     transition: all 1s ease;
-    background: rgba(255,255,255,0.3);
-    padding: 15px 30px;
+    background: rgba(255,255,255,0.4);
+    padding: 15px 25px;
     border-radius: 20px;
     backdrop-filter: blur(10px);
+    max-width: 100%;
+    word-wrap: break-word;
+    line-height: 1.4;
 }
 
 .message.show {
@@ -51,19 +56,24 @@ h1 {
 
 .buttons {
     display: flex;
-    gap: 20px;
-    margin-top: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+    justify-content: center;
 }
 
 .reveal-btn {
-    padding: 15px 40px;
-    font-size: 1.5em;
+    padding: 12px 30px;
+    font-size: clamp(1em, 4vw, 1.5em);
     border: none;
     border-radius: 50px;
     cursor: pointer;
     font-weight: bold;
     transition: all 0.3s;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    min-width: 120px;
+    flex: 1;
+    max-width: 200px;
 }
 
 .yes-btn {
@@ -76,15 +86,18 @@ h1 {
     color: white;
 }
 
-.reveal-btn:hover { transform: scale(1.1); }
+.reveal-btn:hover, .reveal-btn:active { 
+    transform: scale(1.05); 
+}
 
 .no-message {
-    font-size: 1.8em;
+    font-size: clamp(1.2em, 5vw, 1.8em);
     margin: 20px 0;
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.5s ease;
     color: #c2185b;
+    line-height: 1.3;
 }
 
 .no-message.show {
@@ -93,22 +106,49 @@ h1 {
 }
 
 .surprise {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.3);
     backdrop-filter: blur(20px);
     border-radius: 25px;
-    padding: 40px;
+    padding: clamp(20px, 5vw, 40px);
     border: 1px solid rgba(255,255,255,0.4);
     text-align: center;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    max-width: 95vw;
+    margin: 20px auto;
 }
 
-.surprise h2 { color: #ad1457; font-size: 2.5em; margin-bottom: 20px; }
-.surprise p { font-size: 1.4em; color: #880e4f; }
+.surprise h2 { 
+    color: #ad1457; 
+    font-size: clamp(1.8em, 7vw, 2.5em); 
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.surprise p { 
+    font-size: clamp(1.1em, 5vw, 1.4em); 
+    color: #880e4f;
+    line-height: 1.4;
+}
 
 .hidden { display: none !important; }
 
+/* MOBILE FIRST - Enhanced responsive */
 @media (max-width: 768px) {
-    h1 { font-size: 2.5em; }
-    .message { font-size: 1.3em; }
+    body { padding: 10px; }
+    .container { padding: 10px; min-height: 100vh; }
+    .buttons { flex-direction: column; align-items: center; }
+    .reveal-btn { 
+        width: 90vw; 
+        max-width: 280px; 
+        padding: 15px 20px; 
+    }
+    h1 { margin-bottom: 15px; }
+    .message { margin: 12px 0; padding: 12px 20px; }
 }
+
+@media (max-width: 480px) {
+    .surprise { margin: 10px; padding: 20px 15px; }
+    .message { font-size: 1.1em; padding: 12px 15px; }
+}
+
 
