@@ -1,6 +1,6 @@
 let step = 1;
 let noClicks = 0;
-let noButtonDisabled = false; // NEW: Track disabled state
+let noButtonDisabled = false;
 
 function typeWriter(element, text, speed = 100) {
     let i = 0;
@@ -17,28 +17,21 @@ function typeWriter(element, text, speed = 100) {
 
 function revealSurprise() {
     document.getElementById('surprise').classList.remove('hidden');
-    document.body.style.overflow = 'auto'; // Allow scroll for mobile
+    document.body.style.overflow = 'auto';
     document.getElementById('buttons').style.display = 'none';
     
-    // 🌟 MASSIVE HEART SHOWER - 300+ brighter hearts!
+    // 🌟 MASSIVE HEART SHOWER
     const heartShower = setInterval(() => {
-        for(let i = 0; i < 8; i++) { // 8 hearts per frame
+        for(let i = 0; i < 8; i++) {
             createFallingHeart();
         }
-    }, 50); // Every 50ms = 160 hearts/second!
+    }, 50);
     
-    // Stop after 10 seconds of pure magic ✨
-    setTimeout(() => {
-        clearInterval(heartShower);
-    }, 10000);
+    setTimeout(() => clearInterval(heartShower), 10000);
 }
 
-
 function showNoMessage() {
-    // **FIX 1**: Stop if already disabled or too many clicks
-    if (noButtonDisabled || noClicks >= 5) {
-        return;
-    }
+    if (noButtonDisabled || noClicks >= 5) return;
     
     noClicks++;
     document.querySelectorAll('.no-message').forEach(msg => msg.classList.add('hidden'));
@@ -51,7 +44,6 @@ function showNoMessage() {
         }, 200);
     }
     
-    // **FIX 2**: Move No button + start disable countdown
     const noBtn = document.getElementById('noBtn');
     const maxX = window.innerWidth - 120;
     noBtn.style.position = 'fixed';
@@ -59,17 +51,56 @@ function showNoMessage() {
     noBtn.style.top = (Math.random() * 400) + 'px';
     noBtn.style.transition = 'all 0.5s ease';
     
-    // **FIX 3**: DISABLE after 4th click (3 messages shown)
     if (noClicks === 4) {
         setTimeout(() => {
             noButtonDisabled = true;
-            noBtn.innerHTML = '😜 Just say Yes! 🤍 Sorry You dont have other option 🤣';
+            noBtn.innerHTML = '😜 Just say Yes! 💕';
             noBtn.style.background = '#ff4081';
-            noBtn.onclick = revealSurprise; // Redirect to Yes!
+            noBtn.onclick = revealSurprise;
         }, 1000);
     }
 }
 
+function createFallingHeart() {
+    const hearts = ['💖', '💕', '💗', '💝', '🌸', '✨', '💫'];
+    const heart = document.createElement('div');
+    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+    
+    const size = 18 + Math.random() * 25;
+    const x = Math.random() * (window.innerWidth - 60);
+    
+    heart.style.cssText = `
+        position: fixed; left: ${x}px; top: -60px;
+        font-size: ${size}px; pointer-events: none; z-index: 2000;
+        text-shadow: 0 0 15px #ff69b4, 0 0 25px #ff1493;
+        opacity: 0.9; transform: rotate(${Math.random() * 360}deg);
+    `;
+    
+    document.body.appendChild(heart);
+    
+    let fallSpeed = 2 + Math.random() * 4;
+    let sway = 0;
+    let rotation = 0;
+    
+    const fall = setInterval(() => {
+        const rect = heart.getBoundingClientRect();
+        heart.style.top = (parseFloat(heart.style.top) + fallSpeed) + 'px';
+        sway += 0.3;
+        heart.style.left = (parseFloat(heart.style.left) + Math.sin(sway) * 1.5) + 'px';
+        rotation += 8;
+        heart.style.transform = `rotate(${rotation}deg)`;
+        
+        const opacity = parseFloat(heart.style.opacity);
+        heart.style.opacity = (opacity - 0.01);
+        
+        if (rect.bottom > window.innerHeight + 50 || opacity < 0.1) {
+            clearInterval(fall);
+            heart.remove();
+        }
+    }, 20);
+}
+
+// 🔥 FIXED: Event listeners INSIDE onload
 window.onload = () => {
     const messages = [
         "Ena Pakkura 👀 ?? Intha last one year something special for me,so intha valentines day normal ah iruka kudathula😜😜",
@@ -99,64 +130,9 @@ window.onload = () => {
     setTimeout(showNext, 2000);
     setTimeout(showNext, 5000);
     setTimeout(showNext, 9000);
+    
+    // 🔥 FIXED: Add event listeners AFTER buttons appear
+    document.getElementById('yesBtn').addEventListener('click', revealSurprise);
+    document.getElementById('noBtn').addEventListener('click', showNoMessage);
 };
 
-// Event listeners
-document.getElementById('yesBtn').addEventListener('click', revealSurprise);
-document.getElementById('noBtn').addEventListener('click', showNoMessage);
-
-function createFallingHeart() {
-    const hearts = ['💖', '💕', '💗', '💝', '🌸', '✨', '💫'];
-    const heart = document.createElement('div');
-    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-    
-    // 🌟 BRIGHTER + RANDOM SIZES + GLOW
-    const size = 18 + Math.random() * 25;
-    const x = Math.random() * (window.innerWidth - 60);
-    
-    heart.style.cssText = `
-        position: fixed; 
-        left: ${x}px; 
-        top: -60px;
-        font-size: ${size}px;
-        pointer-events: none; 
-        z-index: 2000;
-        text-shadow: 0 0 15px #ff69b4, 0 0 25px #ff1493;
-        opacity: 0.9;
-        transform: rotate(${Math.random() * 360}deg);
-    `;
-    
-    document.body.appendChild(heart);
-    
-    // 🎭 FALL + SWAY + FADE + ROTATE
-    let fallSpeed = 2 + Math.random() * 4;
-    let sway = 0;
-    let rotation = 0;
-    
-    const fall = setInterval(() => {
-        const rect = heart.getBoundingClientRect();
-        
-        // Fall down
-        heart.style.top = (parseFloat(heart.style.top) + fallSpeed) + 'px';
-        
-        // Side-to-side sway
-        sway += 0.3;
-        heart.style.left = (parseFloat(heart.style.left) + Math.sin(sway) * 1.5) + 'px';
-        
-        // Continuous rotation
-        rotation += 8;
-        heart.style.transform = `rotate(${rotation}deg)`;
-        
-        // Fade out
-        const opacity = parseFloat(heart.style.opacity);
-        heart.style.opacity = (opacity - 0.01);
-        
-        // Remove when off screen
-        if (rect.bottom > window.innerHeight + 50 || opacity < 0.1) {
-            clearInterval(fall);
-            heart.remove();
-        }
-    }, 20);
-}
-
-}
