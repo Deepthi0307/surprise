@@ -54,7 +54,7 @@ function showNoMessage() {
     if (noClicks === 4) {
         setTimeout(() => {
             noButtonDisabled = true;
-            noBtn.innerHTML = '😜 Just say Yes! 💕';
+            noBtn.innerHTML = '😜 Just say Yes! (sorry dont have other option)😂';
             noBtn.style.background = '#ff4081';
             noBtn.onclick = revealSurprise;
         }, 1000);
@@ -105,34 +105,39 @@ window.onload = () => {
     const messages = [
         "Ena Pakkura 👀 ?? Intha last one year something special for me,so intha valentines day normal ah iruka kudathula😜😜",
         "You make every day better just by your presence 💖",
-        "Will you be my Valentine? Forever?"
+        "Will you be my Valentine? Forever(Evlo torture pannalum🫣)?"
     ];
     
-    typeWriter(document.getElementById('title'), 'Hey love... 💋');
+    typeWriter(document.getElementById('title'), 'Hey love...😍');
     
     let msgIndex = 0;
-    const showNext = () => {
+    
+    // 🔥 SEQUENTIAL: Each message appears after previous finishes
+    function showNextMessage() {
         if (msgIndex < 3) {
             const msg = document.getElementById(`message${msgIndex + 1}`);
             typeWriter(msg, messages[msgIndex]);
             msg.classList.remove('hidden');
             msg.classList.add('show');
+            
             msgIndex++;
             
-            if (msgIndex === 3) {
-                setTimeout(() => {
-                    document.getElementById('buttons').classList.remove('hidden');
-                }, 1000);
-            }
+            // Chain to next (no hiding!)
+            setTimeout(showNextMessage, 2500); // 2.5s between each message
+        } else if (msgIndex === 3) {
+            // Show buttons after all messages
+            setTimeout(() => {
+                document.getElementById('buttons').classList.remove('hidden');
+            }, 1000);
         }
-    };
+    }
     
-    setTimeout(showNext, 2000);
-    setTimeout(showNext, 5000);
-    setTimeout(showNext, 9000);
+    // Start first message
+    setTimeout(showNextMessage, 2500);
     
-    // 🔥 FIXED: Add event listeners AFTER buttons appear
+    // Event listeners
     document.getElementById('yesBtn').addEventListener('click', revealSurprise);
     document.getElementById('noBtn').addEventListener('click', showNoMessage);
 };
+
 
