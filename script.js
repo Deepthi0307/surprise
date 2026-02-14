@@ -1,8 +1,5 @@
 let step = 1;
-let animationRunning = false;
 let noClicks = 0;
-let noButton = null;
-let yesButton = null;
 
 function typeWriter(element, text, speed = 100) {
     let i = 0;
@@ -12,8 +9,6 @@ function typeWriter(element, text, speed = 100) {
             element.innerHTML += text.charAt(i);
             i++;
             setTimeout(type, speed);
-        } else {
-            animationRunning = false;
         }
     }
     type();
@@ -31,90 +26,69 @@ function revealSurprise() {
 
 function showNoMessage() {
     noClicks++;
-    const noMessages = ['noMessage1', 'noMessage2', 'noMessage3'];
+    document.querySelectorAll('.no-message').forEach(msg => msg.classList.add('hidden'));
     
-    // Hide previous no message
-    document.querySelectorAll('.no-message').forEach(msg => {
-        msg.classList.add('hidden');
-    });
-    
-    // Show current convincing message
     if (noClicks <= 3) {
-        const currentNoMsg = document.getElementById(noMessages[noClicks-1]);
+        const msg = document.getElementById(`noMessage${noClicks}`);
         setTimeout(() => {
-            currentNoMsg.classList.remove('hidden');
-            currentNoMsg.classList.add('show');
-        }, 300);
+            msg.classList.remove('hidden');
+            msg.classList.add('show');
+        }, 200);
     }
     
-    // Move No button around
-    moveNoButton();
-}
-
-function moveNoButton() {
-    if (!noButton) return;
-    
+    // Move No button
+    const noBtn = document.getElementById('noBtn');
     const maxX = window.innerWidth - 120;
-    const maxY = window.innerHeight - 100;
-    
-    noButton.style.position = 'fixed';
-    noButton.style.left = Math.random() * maxX + 'px';
-    noButton.style.top = Math.random() * maxY + 'px';
-    noButton.style.transition = 'all 0.5s ease';
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = (Math.random() * maxX) + 'px';
+    noBtn.style.top = (Math.random() * 400) + 'px';
 }
 
-function nextMessage() {
-    if (step > 3 || animationRunning) return;
-    
-    animationRunning = true;
-    const messages = ['message1', 'message2', 'message3'];
-    const current = document.getElementById(messages[step-1]);
-    const next = document.getElementById(messages[step]);
-    
-    current.classList.remove('show');
-    setTimeout(() => {
-        current.classList.add('hidden');
-        next.classList.remove('hidden');
-        typeWriter(next, next.textContent, 80);
-        next.classList.add('show');
-        step++;
-        animationRunning = false;
-    }, 1000);
-}
-
-// Initialize buttons
 window.onload = () => {
-    yesButton = document.getElementById('yesBtn');
-    noButton = document.getElementById('noBtn');
+    // Messages
+    const messages = [
+        "I've been waiting to show you something special",
+        "You make every day better just by being you 💖",
+        "Will you be my Valentine? Forever?"
+    ];
     
     typeWriter(document.getElementById('title'), 'Hey love... 💕');
-    setTimeout(() => {
-        document.getElementById('message1').classList.add('show');
-        document.getElementById('buttons').style.display = 'flex';
-    }, 2000);
     
-    setTimeout(nextMessage, 5000);
-    setTimeout(nextMessage, 9000);
+    let msgIndex = 0;
+    const showNext = () => {
+        if (msgIndex < 3) {
+            const msg = document.getElementById(`message${msgIndex + 1}`);
+            typeWriter(msg, messages[msgIndex]);
+            msg.classList.remove('hidden');
+            msg.classList.add('show');
+            msgIndex++;
+            
+            if (msgIndex === 3) {
+                setTimeout(() => {
+                    document.getElementById('buttons').classList.remove('hidden');
+                }, 1000);
+            }
+        }
+    };
+    
+    setTimeout(showNext, 2000);
+    setTimeout(showNext, 5000);
+    setTimeout(showNext, 9000);
 };
 
-// Button event listeners
+// Event listeners
 document.getElementById('yesBtn').addEventListener('click', revealSurprise);
 document.getElementById('noBtn').addEventListener('click', showNoMessage);
 
 function createHeart(x, y) {
     const heart = document.createElement('div');
-    heart.innerHTML = ['💖','💕','💗','💝'][Math.floor(Math.random()*4)];
-    heart.style.cssText = `
-        position: fixed; left: ${x}px; top: ${y}px; 
-        font-size: ${15+Math.random()*15}px; 
-        pointer-events: none; z-index: 1000;
-        transform: rotate(${Math.random()*360}deg);
-    `;
+    heart.innerHTML = '💖';
+    heart.style.cssText = `position:fixed;left:${x}px;top:${y}px;font-size:20px;pointer-events:none;z-index:1000;`;
     document.body.appendChild(heart);
     
     let dy = 0;
     const fall = setInterval(() => {
-        dy += 2 + Math.random()*2;
+        dy += 3;
         heart.style.top = (y + dy) + 'px';
         heart.style.opacity = 1 - (dy / 400);
         if (dy > 400) {
@@ -123,3 +97,4 @@ function createHeart(x, y) {
         }
     }, 20);
 }
+
