@@ -57,7 +57,7 @@ function showNoMessage() {
             noBtn.innerHTML = '😜 Just say Yes! (sorry dont have other option)😂';
             noBtn.style.background = '#ff4081';
             noBtn.onclick = revealSurprise;
-        }, 1000);
+        }, 500);
     }
 }
 
