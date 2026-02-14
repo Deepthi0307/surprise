@@ -54,7 +54,7 @@ function showNoMessage() {
     if (noClicks === 4) {
         setTimeout(() => {
             noButtonDisabled = true;
-            noBtn.innerHTML = '😜 Just say Yes! 💕';
+            noBtn.innerHTML = '😜 Just say Yes! 🤍 Sorry You dont have other option 🤣';
             noBtn.style.background = '#ff4081';
             noBtn.onclick = revealSurprise; // Redirect to Yes!
         }, 1000);
